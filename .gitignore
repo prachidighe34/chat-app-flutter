@@ -32,7 +32,15 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
-
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.iml
+android/local.properties
+android/.gradle
+.env
 # Symbolication related
 app.*.symbols
 
