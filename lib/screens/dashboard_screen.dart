@@ -4,7 +4,6 @@ import '../models/user_model.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/socket_service.dart';
-import '../constants/app_constant.dart';
 import 'chat_screen.dart';
 import 'login_screen.dart';
 
@@ -29,21 +28,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> _loadData() async {
     try {
-      // get current user from storage
       final userJson = await AuthService.getUser();
+      print('Current user: $userJson');
+
       if (userJson != null) {
         final userMap = jsonDecode(userJson);
         _currentUser = UserModel.fromJson(userMap);
-
-        // connect socket with current user id
         SocketService.connect(_currentUser!.id);
         _setupSocketListeners();
       }
 
-      // fetch all users from backend
       final response = await ApiService.getUsers();
+      print('Users response: $response');
+
       if (response['success'] == true) {
         final List usersData = response['users'];
+        print('Users count: ${usersData.length}');
         setState(() {
           _users = usersData.map((u) => UserModel.fromJson(u)).toList();
           _isLoading = false;
@@ -55,6 +55,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         });
       }
     } catch (e) {
+      print('Dashboard error: $e');
       setState(() {
         _error = e.toString();
         _isLoading = false;
@@ -63,7 +64,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _setupSocketListeners() {
-    // update online status
     SocketService.onUserOnline((data) {
       setState(() {
         final index = _users.indexWhere((u) => u.id == data['userId']);
@@ -79,7 +79,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       });
     });
 
-    // update offline status
     SocketService.onUserOffline((data) {
       setState(() {
         final index = _users.indexWhere((u) => u.id == data['userId']);
@@ -166,87 +165,87 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 itemCount: _users.length,
                 itemBuilder: (context, index) {
                   final user = _users[index];
-                  return _UserTile(user: user, currentUser: _currentUser!);
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      leading: Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 26,
+                            backgroundColor: Colors.blueAccent.withOpacity(0.1),
+                            backgroundImage: user.image.isNotEmpty
+                                ? NetworkImage(user.image)
+                                : null,
+                            child: user.image.isEmpty
+                                ? Text(
+                                    user.name[0].toUpperCase(),
+                                    style: const TextStyle(
+                                      color: Colors.blueAccent,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  )
+                                : null,
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              width: 14,
+                              height: 14,
+                              decoration: BoxDecoration(
+                                color: user.online ? Colors.green : Colors.grey,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      title: Text(
+                        user.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Text(
+                        user.online ? 'Online' : 'Offline',
+                        style: TextStyle(
+                          color: user.online ? Colors.green : Colors.grey,
+                          fontSize: 13,
+                        ),
+                      ),
+                      trailing: const Icon(
+                        Icons.chat_bubble_outline,
+                        color: Colors.blueAccent,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ChatScreen(
+                              currentUser: _currentUser!,
+                              receiverUser: user,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
                 },
               ),
             ),
-    );
-  }
-}
-
-class _UserTile extends StatelessWidget {
-  final UserModel user;
-  final UserModel currentUser;
-
-  const _UserTile({required this.user, required this.currentUser});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        leading: Stack(
-          children: [
-            CircleAvatar(
-              radius: 26,
-              backgroundColor: Colors.blueAccent.withOpacity(0.1),
-              backgroundImage: user.image.isNotEmpty
-                  ? NetworkImage(user.image)
-                  : null,
-              child: user.image.isEmpty
-                  ? Text(
-                      user.name[0].toUpperCase(),
-                      style: const TextStyle(
-                        color: Colors.blueAccent,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    )
-                  : null,
-            ),
-            // online/offline indicator dot
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Container(
-                width: 14,
-                height: 14,
-                decoration: BoxDecoration(
-                  color: user.online ? Colors.green : Colors.grey,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-              ),
-            ),
-          ],
-        ),
-        title: Text(
-          user.name,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-        ),
-        subtitle: Text(
-          user.online ? 'Online' : 'Offline',
-          style: TextStyle(
-            color: user.online ? Colors.green : Colors.grey,
-            fontSize: 13,
-          ),
-        ),
-        trailing: const Icon(
-          Icons.chat_bubble_outline,
-          color: Colors.blueAccent,
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) =>
-                  ChatScreen(currentUser: currentUser, receiverUser: user),
-            ),
-          );
-        },
-      ),
     );
   }
 }

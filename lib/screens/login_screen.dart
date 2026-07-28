@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import '../constants/app_constant.dart';
 import '../services/auth_service.dart';
 import 'register_screen.dart';
-import 'dashboard_Screen.dart';
+import 'dashboard_screen.dart';
 import '../services/api_service.dart';
 
 class LoginScreen extends StatefulWidget {
