@@ -16,7 +16,7 @@ A full-stack real-time messaging application built with **Node.js**, **Socket.io
 
 | Login                            | Register                               | Dashboard                                | Chat                           |
 | -------------------------------- | -------------------------------------- | ---------------------------------------- | ------------------------------ |
-| ![Login](screenshots/login.jepg) | ![Register](screenshots/register.jpeg) | ![Dashboard](screenshots/dashboard.jpeg) | ![Chat](screenshots/chat.jpeg) |
+| ![Login](screenshots/login.jpeg) | ![Register](screenshots/register.jpeg) | ![Dashboard](screenshots/dashboard.jpeg) | ![Chat](screenshots/chat.jpeg) |
 
 | Groups                                  | Group Chat                                     | Invite                             |
 | --------------------------------------- | ---------------------------------------------- | ---------------------------------- |
