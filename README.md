@@ -2,13 +2,13 @@
 
 A full-stack real-time messaging application built with **Node.js**, **Socket.io**, **MongoDB**, and **Flutter**. Supports 1-on-1 direct messages, group chats, online/offline presence, and file sharing.
 
-> Built as a portfolio project to demonstrate full-stack development skills including real-time systems, JWT authentication, cloud deployment, and cross-platform mobile development.
+> Built as a portfolio project to demonstrate full-stack development skills, including real-time systems, JWT authentication, cloud deployment, and cross-platform mobile development.
 
 ---
 
 ## Demo
 
-📱 [Download APK](https://github.com/prachidighe34/chat-app-flutter/releases) &nbsp;|&nbsp; 🌐 [Live Backend](https://chat-app-8ie6.onrender.com) &nbsp;|&nbsp; 🎥 [Demo Video](#)
+📱 [Download APK](https://github.com/prachidighe34/chat-app-flutter/releases) &nbsp;|&nbsp; 🌐 [Live Backend](https://chat-app-8ie6.onrender.com) &nbsp;|&nbsp; 
 
 ---
 
@@ -311,13 +311,13 @@ flutter run
 ## Key Technical Decisions
 
 **Why MongoDB over PostgreSQL?**
-Messages are append-heavy with flexible schema (reactions, attachments can be added later without migrations). Document model fits chat data naturally. The user/workspace relationships are handled via application-level joins which is sufficient at this scale.
+Messages are append-heavy with a flexible schema (reactions, attachments can be added later without migrations). The document model fits chat data naturally. The user/workspace relationships are handled via application-level joins, which is sufficient at this scale.
 
 **Why Socket.io over raw WebSockets?**
-Socket.io handles reconnection, fallback transports, and room management automatically. For a portfolio project this reduces boilerplate significantly while demonstrating the same real-time concepts.
+Socket.io handles reconnection, fallback transports, and room management automatically. For a portfolio project, this reduces boilerplate significantly while demonstrating the same real-time concepts.
 
 **Why JWT over sessions for mobile?**
-Sessions require cookies which don't work cleanly in Flutter. JWT tokens are stateless, easy to store securely with `flutter_secure_storage`, and work naturally with REST APIs.
+Sessions require cookies, which don't work cleanly in Flutter. JWT tokens are stateless, easy to store securely with `flutter_secure_storage`, and work naturally with REST APIs.
 
 **Scaling consideration (interview talking point):**
 The current Socket.io setup works on a single server. For horizontal scaling, a Redis adapter (`socket.io-redis`) would be needed so all server instances share the same pub/sub channel. Redis would also pull double duty for caching the user presence map.
@@ -344,6 +344,6 @@ The current Socket.io setup works on a single server. For horizontal scaling, a 
 
 ## Author
 
-**Prachi Dighe** — Final year CS student, Surat, Gujarat
+**Prachi Dighe**
 
 [![GitHub](https://img.shields.io/badge/GitHub-prachidighe34-black?logo=github)](https://github.com/prachidighe34)
